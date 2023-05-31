@@ -21,10 +21,16 @@ const server = http.Server(app);
 const io = socketIO(server, {
   pingTimeout: 1000, // how many ms without a pong packet to consider the connection closed
   pingInterval: 3000, // how many ms before sending a new ping packet
+  cors: {
+    origin: "http://localhost:8080",
+    methods: ["GET", "POST"]
+  }
 });
 
 // temp storage to store tasks
 let storage = [[], [], [], []];
+
+
 
 // list of names
 let anonNames = [
@@ -151,7 +157,7 @@ app.get('/', (req, res) => res.sendFile(__dirname, '../dist/index.html'));
 // SocketIO listeners
 // socket refers to the client
 // io refers this server
-io.on('connection', (socket) => {
+io.of('/api/sockets').on('connection', (socket) => {
   // Create anonName upon client connection and store anonName in anonNamesObj
   let anonName;
   // Check if anonName is already assigned for the current socket.id
@@ -169,7 +175,7 @@ io.on('connection', (socket) => {
   // send the tasks saved on this server to the client
   socket.emit('load-tasks', storage);
   // emit current online users to frontend
-  io.emit('user-connected', anonNamesObj);
+  io.of('/api/sockets').emit('user-connected', anonNamesObj);
 
   // client disconnection
   socket.on('disconnect', () => {
@@ -178,7 +184,7 @@ io.on('connection', (socket) => {
     const disconnectedUser = anonNamesObj[socket.id];
     delete anonNamesObj[socket.id];
     // emit current online users to frontend
-    io.emit('user-disconnected', socket.id);
+    io.of('/api/sockets').emit('user-disconnected', socket.id);
     // console.log(
     //   `A client has disconnected ${socket.id} with UPDATED anonNamesList`,
     //   anonNamesObj
@@ -200,7 +206,7 @@ io.on('connection', (socket) => {
       content,
       uuid: uuid,
     });
-    io.emit('add-task', {
+    io.of('/api/sockets').emit('add-task', {
       author: anonName,
       content,
       uuid: uuid,
@@ -213,7 +219,7 @@ io.on('connection', (socket) => {
     storage = storage.map((column) =>
       column.filter((task) => task.uuid !== uuid)
     );
-    io.emit('delete-task', uuid);
+    io.of('/api/sockets').emit('delete-task', uuid);
   });
 
   //Listener for 'next'
@@ -248,7 +254,7 @@ io.on('connection', (socket) => {
       // push foundTask into next column in storage
       storage[foundColumnIndex + 1].push(foundTask);
     }
-    io.emit('move-task-right', { uuid, reviewerId: socket.id });
+    io.of('/api/sockets').emit('move-task-right', { uuid, reviewerId: socket.id });
   });
 
   //Listener for 'previous'
@@ -283,7 +289,7 @@ io.on('connection', (socket) => {
       // push foundTask into previous column in storage
       storage[foundColumnIndex - 1].push(foundTask);
     }
-    io.emit('move-task-left', uuid);
+    io.of('/api/sockets').emit('move-task-left', uuid);
   });
 });
 
