@@ -1,0 +1,11 @@
+const mongoose = require("mongoose");
+
+const boardSchema = new mongoose.Schema ({
+  state: {
+    type: [],
+    required: true
+  },
+
+})
+
+mongoose.model.exports = mongoose.model("Board", boardSchema)
