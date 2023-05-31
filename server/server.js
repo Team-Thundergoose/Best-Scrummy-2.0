@@ -3,6 +3,18 @@ const http = require('http');
 const socketIO = require('socket.io');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
+require('dotenv').config();
+const { default: mongoose } = require('mongoose');
+
+mongoose
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    // sets the name of the DB that our collections are part of
+    dbName: 'Best-Scrummy-2',
+  })
+  .then(() => console.log('Connected to Mongo DB.'))
+  .catch((err) => console.log(err));
 
 const app = express();
 const server = http.Server(app);
