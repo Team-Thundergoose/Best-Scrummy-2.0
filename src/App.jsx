@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Children } from 'react';
 import { socket } from './socket';
 import OnlineUsers from './components/OnlineUsers';
 import CreateCard from './components/CreateCard';
 import Column from './components/Column';
 import styled from 'styled-components';
+import { createBrowserRouter, RouterProvider, Route, Link } from 'react-router-dom';
 
 const Header = styled.div`
   display: flex;
