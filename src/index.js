@@ -3,20 +3,24 @@ import App from './App.jsx';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Login from './pages/LogIn.js';
-import SignUp from './pages/SignUp.js';
-import Profile from './pages/Profile.js';
+import LogIn from './components/pages/login.jsx';
+import SignUp from './components/pages/signup.jsx';
+import Profile from './components/pages/profile.jsx';
+import ActiveBoard from './components/pages/activeboards.jsx';
+import NewBoard from './components/pages/newboard.jsx';
 
 const router = createBrowserRouter([
   { path: '/', element: <App /> },
-  { path: '/logIn', element: <Login /> },
-  { path: '/SignUp', element: <SignUp /> },
-  { path: '/Profile', element: <Profile /> },
+  { path: '/login', element: <LogIn /> },
+  { path: '/signup', element: <SignUp /> },
+  { path: '/profile', element: <Profile /> },
+  { path: '/activeboards', element: <ActiveBoard /> },
+  { path: '/newboard', element: <NewBoard /> },
 ]);
 
 const root = createRoot(document.getElementById('root'));
 
-root.render(<RouterProvider router={router}></RouterProvider>);
+root.render(<RouterProvider router={ router }></RouterProvider>);
 
 
 
