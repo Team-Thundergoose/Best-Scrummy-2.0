@@ -10,7 +10,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  activeBoards: boardSchema,
+  activeBoards: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Board',
+  },
 });
 
 mongoose.model.exports = mongoose.model('User', userSchema);
