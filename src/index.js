@@ -6,16 +6,13 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import LogIn from './components/pages/login.jsx';
 import SignUp from './components/pages/signup.jsx';
 import Profile from './components/pages/profile.jsx';
-import ActiveBoard from './components/pages/activeboards.jsx';
-import NewBoard from './components/pages/newboard.jsx';
+
 
 const router = createBrowserRouter([
   { path: '/', element: <App /> },
   { path: '/login', element: <LogIn /> },
   { path: '/signup', element: <SignUp /> },
   { path: '/profile', element: <Profile /> },
-  { path: '/activeboards', element: <ActiveBoard /> },
-  { path: '/newboard', element: <NewBoard /> },
 ]);
 
 const root = createRoot(document.getElementById('root'));
