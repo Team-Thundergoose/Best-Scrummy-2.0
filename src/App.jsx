@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Children } from 'react';
 import { socket } from './socket';
 import OnlineUsers from './components/OnlineUsers';
 import CreateCard from './components/CreateCard';
 import Column from './components/Column';
 import styled from 'styled-components';
+
 
 const Header = styled.div`
   display: flex;
@@ -36,6 +37,8 @@ const Board = styled.div`
 `;
 
 const HEADERS = ['To Do', 'In Progress', 'Complete', 'Reviewed'];
+
+//in login page, socket.emit('logged-in', MongoID for user)
 
 const App = () => {
   const [tasks, setTasks] = useState([[], [], [], []]);
