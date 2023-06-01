@@ -21,6 +21,7 @@ export const AuthContextProvider = (props) => {
       .then((data) => {
         setUser(data);
       });
+      //socket.emit('logged-in', username)
   }
   function signUpHandler(username, password) {
     console.log(username, password);

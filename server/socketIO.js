@@ -18,14 +18,6 @@ const handleSockets = (socketPath) => {
     let room;
     let user;
 
-    namesObj = {
-      room: {
-        socketid: user
-      }
-    }
-
-
-
     socket.on('logged-in', (username) => {
       user = username;
 
@@ -43,14 +35,24 @@ const handleSockets = (socketPath) => {
     socket.on('choose-board', (boardName) => {
       room = boardName;
       socket.join(room);
-      const socketId = socket.id;
-
-      namesObj[room] = Object.assign({}, namesObj[room], {socketId: user})
+      namesObj[room][socket.id] = user; //? bruh
 
       const board = Board.findOne({ name: boardName });
       storage = board.state;
       socket.emit('user-connected-to-board', namesObj[room]);
       socket.emit('load-tasks', board.state);
+    });
+
+    //called when user clicks on board link OR on new board? depends on front end
+    socket.on('switch-board', (newBoardName) => {
+      //leave old room
+      socket.leave(room);
+      delete namesObj[room][socket.id];
+      //reassign room to newBoardName
+      room = newBoardName;
+      //join new room
+      socket.join(room);
+      namesObj[room][socket.id] = user;
     });
 
     // client disconnection
