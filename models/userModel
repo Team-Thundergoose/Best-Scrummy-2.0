@@ -15,5 +15,6 @@ const userSchema = new mongoose.Schema({
     ref: 'Board',
   },
 });
+//an array of this type??
 
 mongoose.model.exports = mongoose.model('User', userSchema);
