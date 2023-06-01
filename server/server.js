@@ -17,12 +17,13 @@ const session = require('express-session');
 const boardRouter = require('./routes/board.js');
 const userRouter = require('./routes/user.js');
 
+const mongoURI = 'mongodb://127.0.0.1/scrummy';
 mongoose
-  .connect(process.env.MONGO_URI, {
+  .connect(mongoURI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     // sets the name of the DB that our collections are part of
-    dbName: 'Best-Scrummy-2',
+    // dbName: 'Best-Scrummy-2',
   })
   .then(() => console.log('Connected to Mongo DB.'))
   .catch((err) => console.log(err));
