@@ -1,105 +1,87 @@
-const models = require ('../models/boardModel.js')
+const models = require('../models/boardModel.js');
 
 const boardController = {};
 
-boardController.newBoard = async (req, res, next) => {
-  const {boardName, userName} = req.body;
-    
-  try{
+//create a new board middleware
+boardController.createBoard = async (req, res, next) => {
+  const { boardName, userName } = req.body;
+  if (!boardName || !userName) {
+    return next(
+      createError(
+        'createBoard',
+        401,
+        'Error: Missing boardName and/or userName'
+      )
+    );
+  }
 
-    // const result = await create()
-    // res.locals.newBoard = result;
-
-    res.locals.newBoard = await Board.create({
+  try {
+    res.locals.board = await Board.create({
       state: [[], [], [], []],
       name: boardName,
-      participants: userName  
-    })
-    
-    
-    return next()
+      participants: userName,
+    });
+    return next();
   } catch (err) {
-    return next(err)
-  }
-}
-
-// boardController.deleteBoard = async (req, res, next) => {
-
-// }
-
-// boardController.findBoard = async (req, res, next) => {
-
-// }
-
-/**
- const YourModel = require('../models/YourModel');
-
-// Create a new document
-exports.create = async (req, res, next) => {
-  try {
-    const newDocument = new YourModel(req.body);
-    const savedDocument = await newDocument.save();
-    res.status(201).json(savedDocument);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    return next({ log: 'Error: boardController.createBoard middleware' });
   }
 };
 
-// Get all documents
-exports.getAll = async (req, res, next) => {
+//get board middleware
+boardController.getBoard = async (req, res, next) => {
+  const { boardName } = req.params;
+
+  if (!boardName) {
+    return next({ log: 'Error: boardName is required' });
+  }
+
   try {
-    const documents = await YourModel.find();
-    res.json(documents);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.locals.board = await Board.findOne({ firstName: boardName });
+    return next();
+  } catch (err) {
+    return next({ log: 'error: boardController.getBoard middleware' });
   }
 };
 
-// Get a single document by ID
-exports.getById = async (req, res, next) => {
-  try {
-    const document = await YourModel.findById(req.params.id);
-    if (!document) {
-      return res.status(404).json({ error: 'Document not found' });
-    }
-    res.json(document);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+//update board middleware
+boardController.updateBoard = async (req, res, next) => {
+  const { boardName } = req.params;
+  const { state, name, userName } = req.body;
+  if (!boardName || !firstName) {
+    return next('Error: boardName is required');
   }
-};
-
-// Update a document by ID
-exports.updateById = async (req, res, next) => {
   try {
-    const updatedDocument = await YourModel.findByIdAndUpdate(
-      req.params.id,
-      req.body,
+    res.locals.board = await Board.findOneAndUpdate(
+      { name: boardName },
+      {
+        state,
+        name,
+        participants: userName,
+      },
       { new: true }
     );
-    if (!updatedDocument) {
-      return res.status(404).json({ error: 'Document not found' });
-    }
-    res.json(updatedDocument);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+
+    return next();
+  } catch (err) {
+    return next({ log: 'error: boardController.updateBoard' });
   }
 };
 
-// Delete a document by ID
-exports.deleteById = async (req, res) => {
+//delete a board middleware
+boardController.deleteBoard = async (req, res, next) => {
+  const { boardName } = req.params;
+  if (!boardName) {
+    return next('Error: boardName is required');
+  }
+
   try {
-    const deletedDocument = await YourModel.findByIdAndDelete(req.params.id);
-    if (!deletedDocument) {
-      return res.status(404).json({ error: 'Document not found' });
-    }
-    res.sendStatus(204);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.locals.student = await Student.findOneAndDelete({
+      firstName: boardName,
+    });
+    return next();
+  } catch (err) {
+    return next({ log: 'error: boardController.deleteBoard' });
   }
 };
- 
- 
- */
-
 
 module.exports = boardController;

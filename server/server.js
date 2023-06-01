@@ -6,6 +6,11 @@ const { v4: uuidv4 } = require('uuid');
 require('dotenv').config();
 const { default: mongoose } = require('mongoose');
 
+//require router file for additional CRUD functionality
+const router = require('./routes/router.js');
+
+
+
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
@@ -26,6 +31,11 @@ const io = socketIO(server, {
     methods: ["GET", "POST"]
   }
 });
+
+
+
+//mount router middleware under /api prefix
+app.use('/api', router);
 
 // temp storage to store tasks
 let storage = [[], [], [], []];
