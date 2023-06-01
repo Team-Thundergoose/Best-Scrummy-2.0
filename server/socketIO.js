@@ -1,4 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
+const Board = require('./models/boardModel.js')
 
 // temp storage to store tasks
 let storage = [[], [], [], []];
@@ -132,10 +133,10 @@ const handleSockets = (socketPath) => {
     let anonName;
 
     //TESTING ROOMS
-    const arrRooms = ['hello', 'world'];
-    const randomRoom = Math.floor(Math.random()*2);
-    socket.join(arrRooms[randomRoom]);
-    socket.leave()
+    // const arrRooms = ['hello', 'world'];
+    // const randomRoom = Math.floor(Math.random()*2);
+    // socket.join(arrRooms[randomRoom]);
+    // socket.leave()
     
     // Check if anonName is already assigned for the current socket.id
     if (anonNamesObj.hasOwnProperty(socket.id)) {
@@ -162,9 +163,12 @@ const handleSockets = (socketPath) => {
       //rather than load tasks, we would want to unload user.activeBoards
     });
 
-    socket.on('choose-board', (boardID) => {
-      //global board id?? set it
-      socket.emit('load-tasks', board.boardID); //rather than storage, we'd want to access the specific board that is chosen
+    socket.on('choose-board', (boardName) => {
+      socket.join(boardName);
+
+      const board = Board.findOne({name: boardName});
+
+      socket.emit('load-tasks', board.state); //rather than storage, we'd want to access the specific board that is chosen
     });
 
     // client disconnection
