@@ -4,7 +4,8 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import LogIn from './components/pages/login.jsx';
-import Profile from './components/pages/Profile.jsx';
+
+import Profile from './components/pages/profile.jsx';
 import { AuthContextProvider } from './store/auth-context.js';
 import ProtectedRoutes from './components/ProtectedRoutes.jsx';
 import { loader as authLoader } from './components/ProtectedRoutes.jsx';

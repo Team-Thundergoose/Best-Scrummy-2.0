@@ -10,10 +10,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  activeBoards: {
+  activeBoards: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Board',
-  },
+  }],
 });
 //an array of this type??
 // activeBoards: [{ type : ObjectId, ref: 'Board' }],
