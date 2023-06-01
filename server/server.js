@@ -163,6 +163,8 @@ app.get('/', (req, res) => res.sendFile(__dirname, '../dist/index.html'));
 //refactor notes: on connection, do nothing. once logged in, get username to push into names array
 socketPath.on('connection', (socket) => {
   // Create anonName upon client connection and store anonName in anonNamesObj
+  let user;
+  let board;
   let anonName;
   // Check if anonName is already assigned for the current socket.id
   if (anonNamesObj.hasOwnProperty(socket.id)) {
@@ -182,9 +184,16 @@ socketPath.on('connection', (socket) => {
   // emit current online users to frontend
   socketPath.emit('user-connected', anonNamesObj);
 
-  socket.on('logged-in', () => {
+  socket.on('logged-in', (/*username or id?*/) => {
+    //somehow get user?
+    //then get boards from user
+    //then load boards into profile/landing page
+    //rather than load tasks, we would want to unload user.activeBoards
+  });
 
-    socket.emit('load-tasks', storage); //rather than load tasks, we would want to unload user.activeBoards
+  socket.on('choose-board', (boardID) => {
+    //global board id?? set it
+    socket.emit('load-tasks', board.boardID); //rather than storage, we'd want to access the specific board that is chosen
   });
 
   // client disconnection
@@ -199,10 +208,6 @@ socketPath.on('connection', (socket) => {
     //   `A client has disconnected ${socket.id} with UPDATED anonNamesList`,
     //   anonNamesObj
     // );
-    // console.log(
-    //   `A client has disconnected ${socket.id} with UPDATED anonNamesArr`,
-    //   anonNamesArr
-    // );
   });
 
   // Listener for the 'greeting-from-client'
@@ -211,27 +216,30 @@ socketPath.on('connection', (socket) => {
     const uuid = uuidv4();
 
     //store it to the first index of storage (TO DO column)
-    storage[0].push({
+    const obj = {
       author: anonName,
       content,
-      uuid: uuid,
-    });
-    socketPath.emit('add-task', {
-      author: anonName,
-      content,
-      uuid: uuid,
-    });
+      uuid: uuid, 
+    }
+
+    storage[0].push(obj); // ADD TO DB findbyid update?
+
+    socketPath.emit('add-task', obj);
   });
 
   //Listener for 'delete-message'
   socket.on('delete-task', (uuid) => {
     // update the storage when delete is fired
+    // const board = board.findbyid(boardID)
+    // use same to delete task from the appropriate array
+    // update database
     storage = storage.map((column) =>
       column.filter((task) => task.uuid !== uuid)
     );
     socketPath.emit('delete-task', uuid);
   });
 
+  //move left move right, keep same functionality, add updated board to db
   //Listener for 'next'
   socket.on('move-task-right', (uuid) => {
     let foundTask = null;
