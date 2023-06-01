@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
+import AuthContext from '../../store/auth-context';
 
 const Card = styled.div`
   border: 2px solid black;
   background-color: white;
   box-shadow: 5px 5px black;
   margin: auto;
-	margin-top: 100px;
+  margin-top: 100px;
   padding: 4rem;
   display: flex;
   flex-direction: column;
@@ -17,7 +18,7 @@ const Card = styled.div`
     ),
     linear-gradient(90deg, rgba(0, 0, 0, 0.05) 0.1em, transparent 0.1em);
   background-size: 0.7em 0.7em;
-	width: 450px;
+  width: 450px;
 `;
 
 const Button = styled.button`
@@ -90,26 +91,54 @@ const Input = styled.input`
 //     handleAddTask(content);
 //     setInput('');
 //   };
-// // }
+// }
 
 function LogIn() {
-	return (
-		<>
-		
+  const ctx = useContext(AuthContext);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+  const usernameHandler = (e) => {
+    setUsername(e.target.value);
+  };
+  const passwordHandler = (e) => {
+    setPassword(e.target.value);
+  };
+
+  const signUpHandler = (e) => {
+    ctx.onSignUp(username, password);
+  };
+
+  const logInHandler = (e) => {
+    ctx.onLogIn(username, password);
+  };
+
+  return (
+    <>
       <Header>
         <Container>
           <Title>Scrummy</Title>
         </Container>
       </Header>
-			<Card>
-				<Input className="loginbox" type="text" placeholder="User Name" />
-				<Input type="password" placeholder="Password" />
-				<Button>LOGIN</Button>
-				<Button>SIGNUP</Button>
-			</Card>
-			
-		</>
-	)
+      <Card>
+        <Input
+          onChange={usernameHandler}
+          value={username}
+          className="loginbox"
+          type="text"
+          placeholder="User Name"
+        />
+        <Input
+          onChange={passwordHandler}
+          value={password}
+          type="password"
+          placeholder="Password"
+        />
+        <Button onClick={logInHandler}>LOGIN</Button>
+        <Button onClick={signUpHandler}>SIGNUP</Button>
+      </Card>
+    </>
+  );
 }
 
 export default LogIn;

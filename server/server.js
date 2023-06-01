@@ -6,16 +6,29 @@ const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 require('dotenv').config();
 const { default: mongoose } = require('mongoose');
+const cookieParser = require('cookie-parser');
+const cors = require('cors');
+const passport = require('passport');
+const session = require('express-session');
 
-mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    // sets the name of the DB that our collections are part of
-    dbName: 'Best-Scrummy-2',
-  })
-  .then(() => console.log('Connected to Mongo DB.'))
-  .catch((err) => console.log(err));
+//require router file for additional CRUD functionality
+const boardRouter = require('./routes/board.js');
+const userRouter = require('./routes/user.js');
+
+const mongoURI = 'mongodb://127.0.0.1/scrummy';
+mongoose.connect(mongoURI).then(() => {
+  console.log('connected');
+});
+
+// mongoose
+//   .connect(process.env.MONGO_URI, {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+//     // sets the name of the DB that our collections are part of
+//     dbName: 'Best-Scrummy-2',
+//   })
+//   .then(() => console.log('Connected to Mongo DB.'))
+//   .catch((err) => console.log(err));
 
 const app = express();
 const server = http.Server(app);
@@ -27,6 +40,28 @@ const io = socketIO(server, {
     methods: ['GET', 'POST'],
   },
 });
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(
+  cors({
+    origin: 'http//localhost:3000',
+    credentials: true,
+  })
+);
+app.use(
+  session({
+    secret: 'THISISASECRET',
+    resave: true,
+    saveUninitialized: true,
+  })
+);
+app.use(cookieParser('THISISASECRET'));
+app.use(passport.initialize());
+app.use(passport.session());
+require('./passportConfig')(passport);
+//mount router middleware under /api prefix
+app.use('/api/board', boardRouter);
+app.use('/api/user', userRouter);
 
 // temp storage to store tasks
 let storage = [[], [], [], []];
