@@ -1,5 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
-const Board = require('./models/boardModel.js')
+const Board = require('./models/boardModel.js');
 
 // temp storage to store tasks
 let storage = [[], [], [], []];
@@ -18,19 +18,17 @@ const handleSockets = (socketPath) => {
     let room;
     let user;
 
-    //TESTING ROOMS
-    // const arrRooms = ['hello', 'world'];
-    // const randomRoom = Math.floor(Math.random()*2);
-    // socket.join(arrRooms[randomRoom]);
-    // socket.leave()
+    namesObj = {
+      room: {
+        socketid: user
+      }
+    }
 
-    // emit current online users to frontend
-    socketPath.to(arrRooms[randomRoom]).emit('user-connected', namesObj);
+
 
     socket.on('logged-in', (username) => {
       user = username;
-      
-      namesObj[socket.id] = user;
+
       namesArr.push(user);
 
       //somehow get user?
@@ -45,13 +43,18 @@ const handleSockets = (socketPath) => {
     socket.on('choose-board', (boardName) => {
       room = boardName;
       socket.join(room);
+      const socketId = socket.id;
 
-      const board = Board.findOne({name: boardName});
-      socket.emit('user-connected-to-board', namesObj);
+      namesObj[room] = Object.assign({}, namesObj[room], {socketId: user})
+
+      const board = Board.findOne({ name: boardName });
+      storage = board.state;
+      socket.emit('user-connected-to-board', namesObj[room]);
       socket.emit('load-tasks', board.state);
     });
 
     // client disconnection
+    //stretch feature
     socket.on('disconnect', () => {
       namesArr = namesArr.filter((e) => e !== namesObj[socket.id]);
 
@@ -66,37 +69,51 @@ const handleSockets = (socketPath) => {
     });
 
     // Listener for the 'greeting-from-client'
-    socket.on('add-task', (content) => {
+    socket.on('add-task', async (content) => {
       // Assign a unique id for the task
       const uuid = uuidv4();
 
       //store it to the first index of storage (TO DO column)
-      const obj = {
-        author: anonName,
+      const task = {
+        author: user,
         content,
         uuid: uuid,
       };
 
-      storage[0].push(obj); // ADD TO DB findbyid update?
+      storage[0].push(task); 
 
-      socketPath.to(arrRooms[randomRoom]).emit('add-task', obj);
+      // update database with temp storage
+      await Board.findOneAndUpdate(
+        { name: room },
+        { $set: { state: storage } }
+      );
+
+      socketPath.to(room).emit('add-task', task);
     });
 
     //Listener for 'delete-message'
-    socket.on('delete-task', (uuid) => {
+    socket.on('delete-task', async (uuid) => {
       // update the storage when delete is fired
       // const board = board.findbyid(boardID)
       // use same to delete task from the appropriate array
       // update database
+
+
       storage = storage.map((column) =>
         column.filter((task) => task.uuid !== uuid)
       );
-      socketPath.emit('delete-task', uuid);
+
+      await Board.findOneAndUpdate(
+        { name: room },
+        { $set: { state: storage } }
+      );
+
+      socketPath.to(room).emit('delete-task', uuid);
     });
 
     //move left move right, keep same functionality, add updated board to db
     //Listener for 'next'
-    socket.on('move-task-right', (uuid) => {
+    socket.on('move-task-right', async (uuid) => {
       let foundTask = null;
       let foundColumnIndex;
       // find the task with the matching UUID and its current column index
@@ -127,11 +144,19 @@ const handleSockets = (socketPath) => {
         // push foundTask into next column in storage
         storage[foundColumnIndex + 1].push(foundTask);
       }
-      socketPath.emit('move-task-right', { uuid, reviewerId: socket.id });
+
+      await Board.findOneAndUpdate(
+        { name: room },
+        { $set: { state: storage } }
+      );
+
+      socketPath
+        .to(room)
+        .emit('move-task-right', { uuid, reviewerId: socket.id });
     });
 
     //Listener for 'previous'
-    socket.on('move-task-left', (uuid) => {
+    socket.on('move-task-left', async (uuid) => {
       let foundTask = null;
       let foundColumnIndex;
       // find the task with the matching UUID and its current column index
@@ -162,7 +187,13 @@ const handleSockets = (socketPath) => {
         // push foundTask into previous column in storage
         storage[foundColumnIndex - 1].push(foundTask);
       }
-      socketPath.emit('move-task-left', uuid);
+
+      await Board.findOneAndUpdate(
+        { name: room },
+        { $set: { state: storage } }
+      );
+
+      socketPath.to(room).emit('move-task-left', uuid);
     });
   });
 };

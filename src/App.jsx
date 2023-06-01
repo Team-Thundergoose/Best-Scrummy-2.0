@@ -159,7 +159,7 @@ const App = () => {
 
     // Register event listeners
     socket.on('load-tasks', onLoadTasks);
-    socket.on('user-connected', onUserConnected);
+    socket.on('user-connected-to-board', onUserConnectedToBoard);
     socket.on('user-disconnected', onUserDisconnected);
     socket.on('add-task', onAddTask);
     socket.on('delete-task', onDeleteTask);
