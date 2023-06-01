@@ -1,5 +1,8 @@
 import React from 'react';
 
+
+
+
 export default function Board(props) {
   const clickHandler = () => {
     props.chosenHandler(props.name);

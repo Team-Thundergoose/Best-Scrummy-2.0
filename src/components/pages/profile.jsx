@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import BoardDisplay from '../BoardDisplay.jsx';
 //have button that crates a new board with blank state linked to user name
 //then you can join that board
-import { useNavigate, useLoaderData } from 'react-router-dom';
+import { useNavigate, useLoaderData, redirect } from 'react-router-dom';
 
 const Card = styled.div`
   border: 2px solid black;
@@ -124,6 +124,7 @@ const Board = styled.div`
 */
 
 function Profile() {
+  const navigate = useNavigate();
   const user = useLoaderData();
 
   const [boards, setBoards] = useState([...user.userBoards]);
@@ -131,6 +132,7 @@ function Profile() {
   const handleChooseBoard = (boardName) => {
     console.log(boardName);
     socket.emit('choose-board', boardName);
+    navigate('/app');
   };
 
   const handleDeleteTask = (boardName) => {
@@ -139,16 +141,19 @@ function Profile() {
 
   const addBoard = async (e) => {
     e.preventDefault();
-    const name = e.target[0].value;
-    const res = await fetch('/api/board/createBoard', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'Application/JSON',
-      },
-      body: JSON.stringify({ name }),
+    // const name = e.target[0].value;
+    // const res = await fetch('/api/board/createBoard', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'Application/JSON',
+    //   },
+    //   body: JSON.stringify({ name }),
+    // });
+    // const data = await res.json();
+    
+    setBoards((oldBoards)=>{
+      return [...oldBoards, {name: e.target[0].value}];
     });
-    const data = await res.json();
-    setBoards(data);
   };
 
   return (

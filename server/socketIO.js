@@ -21,19 +21,25 @@ const handleSockets = (socketPath) => {
 
     socket.on('logged-in', (username) => {
       user = username;
-
+      console.log('logged in sockets', username);
       namesArr.push(user);
     });
 
     // when a user chooses a board, the front end emits a board name
     // sets room variable for future use, and joins room
     // use board name to fetch board data and pass to front end
-    socket.on('choose-board', (boardName) => {
+    socket.on('choose-board', async (boardName) => {
       room = boardName;
       socket.join(room);
+      // console.log(room)
+      // console.log(namesObj);
+      // console.log(user);
+      // console.log(socket.id);
+      namesObj[room] = {};
       namesObj[room][socket.id] = user;
 
-      const board = Board.findOne({ name: boardName });
+      const board = await Board.findOne({ name: boardName });
+      console.log(board.state);
       storage = board.state;
       socket.emit('user-connected-to-board', namesObj[room]);
       socket.emit('load-tasks', board.state);
