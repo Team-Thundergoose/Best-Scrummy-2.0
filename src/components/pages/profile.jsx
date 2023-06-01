@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useContext } from 'react';
 import { socket } from '../../socket.js';
 import CreateCard from '../CreateCard';
 import styled from 'styled-components';
+<<<<<<< HEAD
 //have button that crates a new board with blank state linked to user name
 //then you can join that board
 
@@ -11,14 +12,20 @@ import styled from 'styled-components';
 
 // 	socket.emit('choose-board', boardName);
 // }
+=======
+import AuthContext from '../../store/auth-context.js';
+>>>>>>> pv-sockets
 
+const handleChooseBoard = (boardName) => {
+  socket.emit('choose-board', boardName);
+};
 
 const Card = styled.div`
   border: 2px solid black;
   background-color: white;
   box-shadow: 5px 5px black;
   margin: auto;
-	margin-top: 100px;
+  margin-top: 100px;
   padding: 4rem;
   display: flex;
   flex-direction: column;
@@ -29,7 +36,7 @@ const Card = styled.div`
     ),
     linear-gradient(90deg, rgba(0, 0, 0, 0.05) 0.1em, transparent 0.1em);
   background-size: 0.7em 0.7em;
-	width: 450px;
+  width: 450px;
 `;
 
 const Button = styled.button`
@@ -81,9 +88,14 @@ const Title = styled.h1`
 `;
 
 const Text = styled.div`
+<<<<<<< HEAD
 font-family: 'Abril Fatface', cursive;
 font-size: 1.75rem;
 `
+=======
+  font-family: 'Abril Fatface', cursive;
+`;
+>>>>>>> pv-sockets
 
 const Input = styled.input`
   border: 1px solid black;
@@ -96,7 +108,7 @@ const Input = styled.input`
 const Board = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
-	grid-template-rows: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
 `;
 //have button that crates a new board with blank state linked to user name
 //then you can join that board
@@ -112,6 +124,7 @@ function handleDeleteTask(uuid) {
 }
 
 function Profile() {
+<<<<<<< HEAD
 	return (
 		<>
 
@@ -152,6 +165,45 @@ function Profile() {
 			</Board>
 		</>
 	)
+=======
+  const ctx = useContext(AuthContext);
+  console.log(ctx.user);
+  return (
+    <>
+      <Header>
+        <Container>
+          <Title>Welcome {ctx.user.username}</Title>
+        </Container>
+      </Header>
+      <Board>
+        <Card>
+          <div>
+            <Text>Join Your Team</Text>
+            <Input
+              className="loginbox"
+              type="text"
+              placeholder="#Board Number/ Name"
+            />
+          </div>
+          <>
+            <Button>'active boards'</Button>
+          </>
+          <Button>
+            {' '}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="48"
+              viewBox="0 -960 960 960"
+              width="48"
+            >
+              <path d="M450-200v-250H200v-60h250v-250h60v250h250v60H510v250h-60Z" />
+            </svg>
+          </Button>
+        </Card>
+      </Board>
+    </>
+  );
+>>>>>>> pv-sockets
 }
 
 export default Profile;

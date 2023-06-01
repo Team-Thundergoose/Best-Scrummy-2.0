@@ -9,34 +9,28 @@ const AuthContext = React.createContext({
 export const AuthContextProvider = (props) => {
   const [user, setUser] = useState(undefined);
 
-  function logInHandler(username, password) {
-    fetch('/api/user/login', {
+  async function logInHandler(username, password) {
+    const res = await fetch('/api/user/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'Application/JSON',
       },
       body: JSON.stringify({ username, password }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setUser(data);
-      });
+    });
+
+    const data = await res.json();
+    setUser(data);
   }
-  function signUpHandler(username, password) {
-    console.log(username, password);
-    fetch('/api/user/signup', {
+  async function signUpHandler(username, password) {
+    const res = await fetch('/api/user/signup', {
       method: 'POST',
       headers: {
         'Content-Type': 'Application/JSON',
       },
       body: JSON.stringify({ username, password }),
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        setUser(data);
-      });
+    });
+    const data = await res.json();
+    setUser(data);
   }
   return (
     <AuthContext.Provider

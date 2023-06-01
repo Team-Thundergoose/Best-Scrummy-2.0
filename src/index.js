@@ -5,16 +5,23 @@ import './index.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import LogIn from './components/pages/login.jsx';
 import SignUp from './components/pages/signup.jsx';
-import Profile from './components/pages/profile.jsx';
+import Profile from './components/pages/Profile.jsx';
 import { AuthContextProvider } from './store/auth-context.js';
+import ProtectedRoutes from './components/ProtectedRoutes.jsx';
 
 //if user is has valid token when accessing "/", "/login" lets redirect to "/profile"
 
 const router = createBrowserRouter([
-  { path: '/', element: <LogIn /> },
+  {
+    path: '/',
+    element: <ProtectedRoutes />,
+    children: [
+      { path: '/app', element: <App /> },
+      { path: '/profile', element: <Profile /> },
+    ],
+  },
   { path: '/login', element: <LogIn /> },
-  { path: '/app', element: <App /> },
-  { path: '/profile', element: <Profile /> },
+  ,
 ]);
 
 const root = createRoot(document.getElementById('root'));

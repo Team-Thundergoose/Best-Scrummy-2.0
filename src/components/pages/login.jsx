@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import AuthContext from '../../store/auth-context';
+import { useNavigate } from 'react-router-dom';
 
 const Card = styled.div`
   border: 2px solid black;
@@ -75,26 +76,10 @@ const Input = styled.input`
   font-size: 1rem;
   padding: 0.5rem 2rem 0.5rem 1rem;
 `;
-//or should we just route people to signup page?
-// if (!username || !password) {
-// 	alert('Please enter correct username or password!')
-// }
-
-// const Login = ({ handleAddTask }) => {
-//   const [input, setInput] = useState('');
-
-//   const handleSubmit = () => {
-//     const content = input.trim();
-//     if (!content) {
-// 			return alert('Please enter correct username or password!');
-// 		}
-//     handleAddTask(content);
-//     setInput('');
-//   };
-// }
 
 function LogIn() {
   const ctx = useContext(AuthContext);
+  const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -105,12 +90,14 @@ function LogIn() {
     setPassword(e.target.value);
   };
 
-  const signUpHandler = (e) => {
-    ctx.onSignUp(username, password);
+  const signUpHandler = async (e) => {
+    await ctx.onSignUp(username, password);
+    navigate('/profile');
   };
 
-  const logInHandler = (e) => {
-    ctx.onLogIn(username, password);
+  const logInHandler = async (e) => {
+    await ctx.onLogIn(username, password);
+    navigate('/profile');
   };
 
   return (
