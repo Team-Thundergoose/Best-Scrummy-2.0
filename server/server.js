@@ -5,30 +5,16 @@ const server = http.Server(app);
 const socketIO = require('socket.io');
 const handleSockets = require('./socketIO.js');
 const path = require('path');
-//require('dotenv').config();
+require('dotenv').config();
 const { default: mongoose } = require('mongoose');
 
-//delete later
-const User = require('../models/userModel');
+const socketPath = io.of('/api/sockets');
+const mongoOptions = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  dbName: 'Best-Scrummy-2',
+};
 
-//database access for sockets
-
-
-app.post('/test/user', async (req, res, next) => {
-  const username = 'pat';
-  const password = 'pat';
-
-  const user = await User.create({username, password});
-  res.send(200).json(user);
-});
-
-app.get('/test/board', async (req, res, next) => {
-  const uid = '64781a318c3d168e9e410674';
-
-  const user = await User.findById(uid);
-  console.log(user.activeBoards);
-  res.send(200).json(user.activeBoards);
-});
 // Serve static files in the /dist folder
 app.use('/', express.static(path.join(__dirname, '../dist')));
 app.get('/', (req, res) => res.sendFile(__dirname, '../dist/index.html'));
@@ -41,19 +27,6 @@ const io = socketIO(server, {
     methods: ['GET', 'POST'],
   },
 });
-const socketPath = io.of('/api/sockets');
-
-
-
-
-
-const mongoOptions = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  // sets the name of the DB that our collections are part of
-  dbName: 'Best-Scrummy-2',
-};
-
 
 const start = async () => {
   try{
