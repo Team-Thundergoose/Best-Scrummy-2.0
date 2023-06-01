@@ -67,4 +67,9 @@ const io = socketIO(server, {
 const socketPath = io.of('/api/sockets');
 handleSockets(socketPath);
 
+app.use(({ code, error }, req, res, next) => {
+  console.log(code, error);
+  res.status(code).json({ error: error.message });
+});
+
 server.listen(3000, () => console.log('The server is running at port 3000'));

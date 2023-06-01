@@ -5,13 +5,12 @@ const passport = require('passport');
 userController.login = async (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
     if (err) {
-      console.log(err);
+      throw err;
     }
     if (!user) res.json('no user exists');
     else {
       req.logIn(user, (err) => {
         if (err) throw err;
-
         res.json(req.user);
       });
     }
