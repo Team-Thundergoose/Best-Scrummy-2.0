@@ -7,11 +7,12 @@ import LogIn from './components/pages/login.jsx';
 import SignUp from './components/pages/signup.jsx';
 import Profile from './components/pages/profile.jsx';
 
+//if user is has valid token when accessing "/", "/login" lets redirect to "/profile"
 
 const router = createBrowserRouter([
-  { path: '/', element: <App /> },
+  { path: '/', element: <LogIn /> },
   { path: '/login', element: <LogIn /> },
-  { path: '/signup', element: <SignUp /> },
+  { path: '/signup', element: <App /> },
   { path: '/profile', element: <Profile /> },
 ]);
 
