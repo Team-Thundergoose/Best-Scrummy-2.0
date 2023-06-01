@@ -2,23 +2,11 @@ import React, { useContext } from 'react';
 import { socket } from '../../socket.js';
 import CreateCard from '../CreateCard';
 import styled from 'styled-components';
-<<<<<<< HEAD
+import BoardDisplay from '../BoardDisplay.jsx';
 //have button that crates a new board with blank state linked to user name
 //then you can join that board
 
-//redireced here if signed in alreday
-
-// handleChooseBoard = (boardName) => {
-
-// 	socket.emit('choose-board', boardName);
-// }
-=======
 import AuthContext from '../../store/auth-context.js';
->>>>>>> pv-sockets
-
-const handleChooseBoard = (boardName) => {
-  socket.emit('choose-board', boardName);
-};
 
 const Card = styled.div`
   border: 2px solid black;
@@ -59,11 +47,12 @@ const Button = styled.button`
     cursor: not-allowed;
     background-color: #d1d5db;
   }
-	width: 60px;
+  width: 60px;
 `;
 
 const Header = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
   padding: 10px 10px;
@@ -77,31 +66,21 @@ const Header = styled.div`
   border-bottom: 2px solid black;
 `;
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
 const Title = styled.h1`
   font-family: 'Abril Fatface', cursive;
   font-size: 2.2rem;
 `;
 
 const Text = styled.div`
-<<<<<<< HEAD
-font-family: 'Abril Fatface', cursive;
-font-size: 1.75rem;
-`
-=======
   font-family: 'Abril Fatface', cursive;
+  font-size: 1.75rem;
 `;
->>>>>>> pv-sockets
 
 const Input = styled.input`
   border: 1px solid black;
   border-radius: 2rem;
   color: black;
-  
+
   padding: 0.5rem 2rem 0.5rem 1rem;
 `;
 
@@ -119,32 +98,16 @@ const Board = styled.div`
 
 //fetch user boards
 
-function handleDeleteTask(uuid) {
-	socket.emit('delete-task', uuid);
-}
-
-function Profile() {
-<<<<<<< HEAD
-	return (
-		<>
-
-			<Header>
-				<Container>
-					<Title>Welcome 'username's Profile!</Title>
-				</Container>
-			</Header>
-			<Header><Title>Your Boards</Title></Header>
-			<Board>
-				{/* {this.state.value.map(e, i) => (
+/* {this.state.value.map(e, i) => (
 					<Card 
 					key={} 
 					value={this.state.value[i]} 
 					handleDeleteTask={handleDeleteTask}>
 					</Card>
-				)} */}
-				<Card>
-					<div>
-						<form action="send to db">
+				)} */
+
+/*
+<form action="send to db">
 							<Text>Create A New Board</Text>
 								<CreateCard></CreateCard> 
 							<Input className="loginbox" type="text" placeholder="#Board Number/ Name" />
@@ -159,51 +122,55 @@ function Profile() {
 							</Button>
 							<input type="submit" value="Submit"></input>
 						</form>
-					</div>
-				</Card>
+*/
 
-			</Board>
-		</>
-	)
-=======
-  const ctx = useContext(AuthContext);
-  console.log(ctx.user);
+function Profile() {
+  let boards = [
+    {
+      state: [[], [], [{ asdf: 10 }], []],
+      name: 'super board',
+      participants: ['user'],
+    },
+    {
+      state: [[], [{ asdf: 13 }], [{ asdf: 11 }], []],
+      name: 'super board2',
+      participants: ['user1'],
+    },
+    {
+      state: [[], [], [{ asdf: 12 }], []],
+      name: 'super board3',
+      participants: ['user2'],
+    },
+  ];
+
+  const handleChooseBoard = (boardName) => {
+    socket.emit('choose-board', boardName);
+  };
+
+  const handleDeleteTask = (boardName) => {
+    socket.emit('delete-board', boardName);
+  };
+
   return (
-    <>
+    <div>
       <Header>
-        <Container>
-          <Title>Welcome {ctx.user.username}</Title>
-        </Container>
+        <Title>Welcome To Scrummy!</Title>
       </Header>
-      <Board>
-        <Card>
-          <div>
-            <Text>Join Your Team</Text>
-            <Input
-              className="loginbox"
-              type="text"
-              placeholder="#Board Number/ Name"
-            />
-          </div>
-          <>
-            <Button>'active boards'</Button>
-          </>
-          <Button>
-            {' '}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="48"
-              viewBox="0 -960 960 960"
-              width="48"
-            >
-              <path d="M450-200v-250H200v-60h250v-250h60v250h250v60H510v250h-60Z" />
-            </svg>
-          </Button>
-        </Card>
-      </Board>
-    </>
+      <Header>
+        <Title>Your Active Boards</Title>
+      </Header>
+      <div className="boardDisplay">
+        {boards.map((el, i) => (
+          <BoardDisplay
+            key={`boards${i}`}
+            handleChooseBoard={handleChooseBoard}
+            handleDeleteTask={handleDeleteTask}
+            boardName={el.name}
+          />
+        ))}
+      </div>
+    </div>
   );
->>>>>>> pv-sockets
 }
 
 export default Profile;

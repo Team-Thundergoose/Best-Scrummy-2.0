@@ -1,5 +1,6 @@
 const { v4: uuidv4 } = require('uuid');
 const Board = require('./models/boardModel.js');
+const User = require('./models/userModel.js');
 
 // temp storage to store tasks
 let storage = [[], [], [], []];
@@ -22,11 +23,6 @@ const handleSockets = (socketPath) => {
       user = username;
 
       namesArr.push(user);
-
-      //somehow get user?
-      //then get boards from user
-      //then load boards into profile/landing page
-      //rather than load tasks, we would want to unload user.activeBoards
     });
 
     // when a user chooses a board, the front end emits a board name
@@ -35,8 +31,8 @@ const handleSockets = (socketPath) => {
     socket.on('choose-board', (boardName) => {
       room = boardName;
       socket.join(room);
-      namesObj[room][socket.id] = user; //? bruh
-
+      namesObj[room][socket.id] = user; 
+      
       const board = Board.findOne({ name: boardName });
       storage = board.state;
       socket.emit('user-connected-to-board', namesObj[room]);

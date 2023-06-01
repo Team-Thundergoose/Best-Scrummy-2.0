@@ -5,7 +5,7 @@ import './index.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import LogIn from './components/pages/login.jsx';
 import SignUp from './components/pages/signup.jsx';
-import Profile from './components/pages/Profile.jsx';
+import Profile from './components/pages/profile.jsx';
 import { AuthContextProvider } from './store/auth-context.js';
 import ProtectedRoutes from './components/ProtectedRoutes.jsx';
 
