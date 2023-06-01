@@ -18,9 +18,9 @@ const loginbox = styled.div`
   background-size: 0.7em 0.7em;
 `;
 //or should we just route people to signup page?
-if (!username || !password) {
-	alert('Please enter correct username or password!')
-}
+// if (!username || !password) {
+// 	alert('Please enter correct username or password!')
+// }
 
 
 
