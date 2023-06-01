@@ -38,6 +38,8 @@ const Board = styled.div`
 
 const HEADERS = ['To Do', 'In Progress', 'Complete', 'Reviewed'];
 
+//in login page, socket.emit('logged-in', MongoID for user)
+
 const App = () => {
   const [tasks, setTasks] = useState([[], [], [], []]);
   const [allUsers, setAllUsers] = useState({});
