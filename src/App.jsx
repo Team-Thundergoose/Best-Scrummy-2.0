@@ -52,7 +52,7 @@ const App = () => {
       setTasks(() => tasks);
     }
 
-    function onUserConnected(usersObj) {
+    function onUserConnectedToBoard(usersObj) {
       setAllUsers(usersObj);
       setUser(usersObj[socket.id]);
     }
@@ -170,7 +170,7 @@ const App = () => {
     // (prevents duplicate event registration)
     return () => {
       socket.off('load-tasks', onLoadTasks);
-      socket.off('user-connected', onUserConnected);
+      socket.off('user-connected-to-board', onUserConnectedToBoard);
       socket.off('user-disconnected', onUserDisconnected);
       socket.off('add-task', onAddTask);
       socket.off('delete-task', onDeleteTask);
