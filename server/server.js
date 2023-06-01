@@ -6,6 +6,8 @@ const { v4: uuidv4 } = require('uuid');
 require('dotenv').config();
 const { default: mongoose } = require('mongoose');
 
+//database access for sockets
+
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
@@ -26,10 +28,10 @@ const io = socketIO(server, {
     methods: ["GET", "POST"]
   }
 });
+const socketPath = io.of('/api/sockets');
 
 // temp storage to store tasks
 let storage = [[], [], [], []];
-
 
 
 // list of names
@@ -157,7 +159,9 @@ app.get('/', (req, res) => res.sendFile(__dirname, '../dist/index.html'));
 // SocketIO listeners
 // socket refers to the client
 // io refers this server
-io.of('/api/sockets').on('connection', (socket) => {
+
+//refactor notes: on connection, do nothing. once logged in, get username to push into names array
+socketPath.on('connection', (socket) => {
   // Create anonName upon client connection and store anonName in anonNamesObj
   let anonName;
   // Check if anonName is already assigned for the current socket.id
@@ -173,9 +177,15 @@ io.of('/api/sockets').on('connection', (socket) => {
   }
 
   // send the tasks saved on this server to the client
-  socket.emit('load-tasks', storage);
+  socket.emit('load-tasks', storage); //FROM DATABASE, DELETE LINE AFTER LOG IN FUNCTIONALITY?, might be another step based on front end architecture
+
   // emit current online users to frontend
-  io.of('/api/sockets').emit('user-connected', anonNamesObj);
+  socketPath.emit('user-connected', anonNamesObj);
+
+  socket.on('logged-in', () => {
+
+    socket.emit('load-tasks', storage); //rather than load tasks, we would want to unload user.activeBoards
+  });
 
   // client disconnection
   socket.on('disconnect', () => {
@@ -184,7 +194,7 @@ io.of('/api/sockets').on('connection', (socket) => {
     const disconnectedUser = anonNamesObj[socket.id];
     delete anonNamesObj[socket.id];
     // emit current online users to frontend
-    io.of('/api/sockets').emit('user-disconnected', socket.id);
+    socketPath.emit('user-disconnected', socket.id);
     // console.log(
     //   `A client has disconnected ${socket.id} with UPDATED anonNamesList`,
     //   anonNamesObj
@@ -206,7 +216,7 @@ io.of('/api/sockets').on('connection', (socket) => {
       content,
       uuid: uuid,
     });
-    io.of('/api/sockets').emit('add-task', {
+    socketPath.emit('add-task', {
       author: anonName,
       content,
       uuid: uuid,
@@ -219,7 +229,7 @@ io.of('/api/sockets').on('connection', (socket) => {
     storage = storage.map((column) =>
       column.filter((task) => task.uuid !== uuid)
     );
-    io.of('/api/sockets').emit('delete-task', uuid);
+    socketPath.emit('delete-task', uuid);
   });
 
   //Listener for 'next'
@@ -254,7 +264,7 @@ io.of('/api/sockets').on('connection', (socket) => {
       // push foundTask into next column in storage
       storage[foundColumnIndex + 1].push(foundTask);
     }
-    io.of('/api/sockets').emit('move-task-right', { uuid, reviewerId: socket.id });
+    socketPath.emit('move-task-right', { uuid, reviewerId: socket.id });
   });
 
   //Listener for 'previous'
@@ -289,8 +299,9 @@ io.of('/api/sockets').on('connection', (socket) => {
       // push foundTask into previous column in storage
       storage[foundColumnIndex - 1].push(foundTask);
     }
-    io.of('/api/sockets').emit('move-task-left', uuid);
+    socketPath.emit('move-task-left', uuid);
   });
 });
 
 server.listen(3000, () => console.log('The server is running at port 3000'));
+
