@@ -32,7 +32,6 @@ export const AuthContextProvider = (props) => {
       body: JSON.stringify({ username, password }),
     });
     const data = await res.json();
-
     setUser(data);
   }
   return (

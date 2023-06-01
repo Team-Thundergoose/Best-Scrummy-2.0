@@ -31,8 +31,8 @@ const handleSockets = (socketPath) => {
     socket.on('choose-board', (boardName) => {
       room = boardName;
       socket.join(room);
-      namesObj[room][socket.id] = user; 
-      
+      namesObj[room][socket.id] = user;
+
       const board = Board.findOne({ name: boardName });
       storage = board.state;
       socket.emit('user-connected-to-board', namesObj[room]);

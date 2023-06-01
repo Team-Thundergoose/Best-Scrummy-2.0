@@ -125,30 +125,11 @@ const Board = styled.div`
 
 function Profile() {
   const user = useLoaderData();
-  const [boards, setBoards] = useState([]);
-  useEffect(() => {
-    setBoards(user.activeBoards);
-  }, []);
-  // const boards = user.activeBoards;
-  // // let boards = [
-  // //   {
-  // //     state: [[], [], [{ asdf: 10 }], []],
-  // //     name: 'super board',
-  // //     participants: ['user'],
-  // //   },
-  // //   {
-  // //     state: [[], [{ asdf: 13 }], [{ asdf: 11 }], []],
-  // //     name: 'super board2',
-  // //     participants: ['user1'],
-  // //   },
-  // //   {
-  // //     state: [[], [], [{ asdf: 12 }], []],
-  // //     name: 'super board3',
-  // //     participants: ['user2'],
-  // //   },
-  // // ];
+
+  const [boards, setBoards] = useState([...user.userBoards]);
 
   const handleChooseBoard = (boardName) => {
+    console.log(boardName);
     socket.emit('choose-board', boardName);
   };
 
