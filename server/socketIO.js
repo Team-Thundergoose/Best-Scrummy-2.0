@@ -133,9 +133,9 @@ const handleSockets = (socketPath) => {
     let anonName;
 
     //TESTING ROOMS
-    // const arrRooms = ['hello', 'world'];
-    // const randomRoom = Math.floor(Math.random()*2);
-    // socket.join(arrRooms[randomRoom]);
+    const arrRooms = ['hello', 'world'];
+    const randomRoom = Math.floor(Math.random()*2);
+    socket.join(arrRooms[randomRoom]);
     // socket.leave()
     
     // Check if anonName is already assigned for the current socket.id

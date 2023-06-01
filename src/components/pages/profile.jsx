@@ -1,15 +1,16 @@
 import React from "react";
 import { socket } from '../../socket.js';
+import CreateCard from '../CreateCard';
 import styled from 'styled-components';
 //have button that crates a new board with blank state linked to user name
 //then you can join that board
 
 //redireced here if signed in alreday
 
-handleChooseBoard = (boardName) => {
+// handleChooseBoard = (boardName) => {
 
-	socket.emit('choose-board', boardName);
-}
+// 	socket.emit('choose-board', boardName);
+// }
 
 
 const Card = styled.div`
@@ -51,6 +52,7 @@ const Button = styled.button`
     cursor: not-allowed;
     background-color: #d1d5db;
   }
+	width: 60px;
 `;
 
 const Header = styled.div`
@@ -80,13 +82,14 @@ const Title = styled.h1`
 
 const Text = styled.div`
 font-family: 'Abril Fatface', cursive;
+font-size: 1.75rem;
 `
 
 const Input = styled.input`
   border: 1px solid black;
   border-radius: 2rem;
   color: black;
-  font-size: 1rem;
+  
   padding: 0.5rem 2rem 0.5rem 1rem;
 `;
 
@@ -104,37 +107,48 @@ const Board = styled.div`
 
 //fetch user boards
 
+function handleDeleteTask(uuid) {
+	socket.emit('delete-task', uuid);
+}
+
 function Profile() {
 	return (
 		<>
-		
-      <Header>
-        <Container>
-          <Title>Welcome 'username's Profile!</Title>
-        </Container>
-      </Header>
-			<Board>
-				<Card>
+
+			<Header>
+				<Container>
 					<Title>Welcome 'username's Profile!</Title>
-					
-				</Card>
+				</Container>
+			</Header>
+			<Header><Title>Your Boards</Title></Header>
+			<Board>
+				{/* {this.state.value.map(e, i) => (
+					<Card 
+					key={} 
+					value={this.state.value[i]} 
+					handleDeleteTask={handleDeleteTask}>
+					</Card>
+				)} */}
 				<Card>
 					<div>
-						<Text>Join Your Team</Text>
-						<Input className="loginbox" type="text" placeholder="#Board Number/ Name" />
+						<form action="send to db">
+							<Text>Create A New Board</Text>
+								<CreateCard></CreateCard> 
+							<Input className="loginbox" type="text" placeholder="#Board Number/ Name" />
+							<Button > <svg
+								xmlns="http://www.w3.org/2000/svg"
+								height="48"
+								viewBox="0 -960 960 960"
+								width="48"
+							>
+								<path d="M450-200v-250H200v-60h250v-250h60v250h250v60H510v250h-60Z" />
+							</svg>
+							</Button>
+							<input type="submit" value="Submit"></input>
+						</form>
 					</div>
-					<>
-					<Button>'active boards'</Button>
-					</>
-					<Button > <svg
-						xmlns="http://www.w3.org/2000/svg"
-						height="48"
-						viewBox="0 -960 960 960"
-						width="48"
-					>
-						<path d="M450-200v-250H200v-60h250v-250h60v250h250v60H510v250h-60Z" />
-					</svg></Button>
 				</Card>
+
 			</Board>
 		</>
 	)
