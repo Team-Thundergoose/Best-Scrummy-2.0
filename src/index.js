@@ -12,7 +12,7 @@ import Profile from './components/pages/profile.jsx';
 const router = createBrowserRouter([
   { path: '/', element: <LogIn /> },
   { path: '/login', element: <LogIn /> },
-  { path: '/signup', element: <App /> },
+  { path: '/app', element: <App /> },
   { path: '/profile', element: <Profile /> },
 ]);
 
