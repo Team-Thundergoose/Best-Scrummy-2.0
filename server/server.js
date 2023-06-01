@@ -17,10 +17,15 @@ const session = require('express-session');
 const boardRouter = require('./routes/board.js');
 const userRouter = require('./routes/user.js');
 
-const mongoURI = 'mongodb://127.0.0.1/scrummy';
-mongoose.connect(mongoURI).then(() => {
-  console.log('connected');
-});
+mongoose
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    // sets the name of the DB that our collections are part of
+    dbName: 'Best-Scrummy-2',
+  })
+  .then(() => console.log('Connected to Mongo DB.'))
+  .catch((err) => console.log(err));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -45,12 +50,6 @@ require('./passportConfig')(passport);
 app.use('/api/board', boardRouter);
 app.use('/api/user', userRouter);
 
-const mongoOptions = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  dbName: 'Best-Scrummy-2',
-};
-
 // Serve static files in the /dist folder
 app.use('/', express.static(path.join(__dirname, '../dist')));
 app.get('/', (req, res) => res.sendFile(__dirname, '../dist/index.html'));
@@ -65,16 +64,6 @@ const io = socketIO(server, {
 });
 
 const socketPath = io.of('/api/sockets');
+handleSockets(socketPath);
 
-const start = async () => {
-  try {
-    await mongoose.connect(process.env.MONGO_URI, mongoOptions);
-    handleSockets(socketPath);
-    server.listen(3000, () =>
-      console.log('The server is running at port 3000')
-    );
-  } catch (err) {
-    console.log(err);
-  }
-};
-start();
+server.listen(3000, () => console.log('The server is running at port 3000'));

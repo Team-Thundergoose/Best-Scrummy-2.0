@@ -35,8 +35,7 @@ export const AuthContextProvider = (props) => {
         return res.json();
       })
       .then((data) => {
-        // setUser(data);
-        console.log(data);
+        setUser(data);
       });
   }
   return (
