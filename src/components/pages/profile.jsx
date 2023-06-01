@@ -1,12 +1,11 @@
-import React, { useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { socket } from '../../socket.js';
 import CreateCard from '../CreateCard';
 import styled from 'styled-components';
 import BoardDisplay from '../BoardDisplay.jsx';
 //have button that crates a new board with blank state linked to user name
 //then you can join that board
-
-import AuthContext from '../../store/auth-context.js';
+import { useNavigate, useLoaderData } from 'react-router-dom';
 
 const Card = styled.div`
   border: 2px solid black;
@@ -125,23 +124,29 @@ const Board = styled.div`
 */
 
 function Profile() {
-  let boards = [
-    {
-      state: [[], [], [{ asdf: 10 }], []],
-      name: 'super board',
-      participants: ['user'],
-    },
-    {
-      state: [[], [{ asdf: 13 }], [{ asdf: 11 }], []],
-      name: 'super board2',
-      participants: ['user1'],
-    },
-    {
-      state: [[], [], [{ asdf: 12 }], []],
-      name: 'super board3',
-      participants: ['user2'],
-    },
-  ];
+  const user = useLoaderData();
+  const [boards, setBoards] = useState([]);
+  useEffect(() => {
+    setBoards(user.activeBoards);
+  }, []);
+  // const boards = user.activeBoards;
+  // // let boards = [
+  // //   {
+  // //     state: [[], [], [{ asdf: 10 }], []],
+  // //     name: 'super board',
+  // //     participants: ['user'],
+  // //   },
+  // //   {
+  // //     state: [[], [{ asdf: 13 }], [{ asdf: 11 }], []],
+  // //     name: 'super board2',
+  // //     participants: ['user1'],
+  // //   },
+  // //   {
+  // //     state: [[], [], [{ asdf: 12 }], []],
+  // //     name: 'super board3',
+  // //     participants: ['user2'],
+  // //   },
+  // // ];
 
   const handleChooseBoard = (boardName) => {
     socket.emit('choose-board', boardName);
@@ -149,6 +154,20 @@ function Profile() {
 
   const handleDeleteTask = (boardName) => {
     socket.emit('delete-board', boardName);
+  };
+
+  const addBoard = async (e) => {
+    e.preventDefault();
+    const name = e.target[0].value;
+    const res = await fetch('/api/board/createBoard', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'Application/JSON',
+      },
+      body: JSON.stringify({ name }),
+    });
+    const data = await res.json();
+    setBoards(data);
   };
 
   return (
@@ -159,18 +178,27 @@ function Profile() {
       <Header>
         <Title>Your Active Boards</Title>
       </Header>
+      <form onSubmit={addBoard}>
+        <input type="text" />
+      </form>
       <div className="boardDisplay">
-        {boards.map((el, i) => (
-          <BoardDisplay
-            key={`boards${i}`}
-            handleChooseBoard={handleChooseBoard}
-            handleDeleteTask={handleDeleteTask}
-            boardName={el.name}
-          />
-        ))}
+        <BoardDisplay
+          handleChooseBoard={handleChooseBoard}
+          handleDeleteTask={handleDeleteTask}
+          boardData={boards}
+        />
       </div>
     </div>
   );
 }
 
 export default Profile;
+
+export async function loader() {
+  const res = await fetch('/api/user/getuser');
+  if (!res.ok) {
+    return redirect('/login');
+  }
+  const user = res.json();
+  return user;
+}

@@ -9,6 +9,7 @@ import Profile from './components/pages/profile.jsx';
 import { AuthContextProvider } from './store/auth-context.js';
 import ProtectedRoutes from './components/ProtectedRoutes.jsx';
 import { loader as authLoader } from './components/ProtectedRoutes.jsx';
+import { loader as getUserProfile } from './components/pages/profile.jsx';
 
 //if user is has valid token when accessing "/", "/login" lets redirect to "/profile"
 
@@ -19,7 +20,7 @@ const router = createBrowserRouter([
     loader: authLoader,
     children: [
       { path: '/app', element: <App /> },
-      { path: '/profile', element: <Profile /> },
+      { path: '/profile', element: <Profile />, loader: getUserProfile },
     ],
   },
   { path: '/login', element: <LogIn /> },

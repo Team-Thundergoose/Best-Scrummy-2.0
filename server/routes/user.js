@@ -11,6 +11,8 @@ router.post('/signup', userController.signup);
 
 router.get('/getuser', isLoggedIn, (req, res, next) => {
   const { username, activeBoards } = req.user;
+  // const populateUser = await user.populate('activeBoards');
+  //   res.locals.boards = populateUser.activeBoards;
   res.json({ username, activeBoards });
 });
 
