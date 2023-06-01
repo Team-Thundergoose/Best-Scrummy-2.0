@@ -12,7 +12,7 @@ app.use(express.json());
 
 //POST functionality
 router.post('/createBoard', boardController.createBoard, (req, res) =>
-  res.status(200).json(res.locals.newBoard)
+  res.status(200).json(res.locals.boards)
 );
 
 //GET

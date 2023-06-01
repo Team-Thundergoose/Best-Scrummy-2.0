@@ -1,30 +1,30 @@
-const models = require('../models/boardModel.js');
+const Board = require('../models/boardModel.js');
+const User = require('../models/userModel.js');
 
 const boardController = {};
 
 //create a new board middleware
 boardController.createBoard = async (req, res, next) => {
-  const { boardName, userName } = req.body;
-  if (!boardName || !userName) {
-    return next(
-      createError(
-        'createBoard',
-        401,
-        'Error: Missing boardName and/or userName'
-      )
-    );
-  }
-
+  const { name } = req.body;
+  const user = await User.findOne({ username: req.user.username });
+  console.log(user);
   try {
-    res.locals.board = await Board.create({
+    const newBoard = await Board.create({
       state: [[], [], [], []],
-      name: boardName,
-      participants: userName,
+      name,
+      participants: [user._id],
     });
+
+    user.activeBoards.push(newBoard._id);
+    await user.save();
+    const populateUser = await user.populate('activeBoards');
+    res.locals.boards = populateUser.activeBoards;
     return next();
   } catch (err) {
     return next({ log: 'Error: boardController.createBoard middleware' });
   }
+
+  next();
 };
 
 //get board middleware

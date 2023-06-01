@@ -1,11 +1,9 @@
-import React, { useContext, redirect } from 'react';
-import { useNavigate, Outlet } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { useNavigate, Outlet, redirect } from 'react-router-dom';
 import MainNav from './pages/MainNav';
 import AuthContext from '../store/auth-context';
 
 export default function ProtectedRoutes() {
-  const ctx = useContext(AuthContext);
-
   const jsx = (
     <>
       <MainNav></MainNav>
@@ -14,4 +12,12 @@ export default function ProtectedRoutes() {
   );
 
   return <> {jsx}</>;
+}
+
+export async function loader() {
+  const res = await fetch('/api/user/getuser');
+  if (!res.ok) {
+    return redirect('/login');
+  }
+  return null;
 }

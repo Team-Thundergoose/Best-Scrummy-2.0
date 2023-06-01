@@ -1,7 +1,9 @@
 module.exports = {
   isLoggedIn(req, res, next) {
+    console.log('INSIDE MIDDLEWARE ISLOGGED IN');
     if (!req.isAuthenticated()) {
-      return next({ code: 400, error: { message: 'MUST BE LOGGED IN' } });
+      console.log('INSIDE MIDDLEWARE ISLOGGED IN BUT NOT AUTHENTICATED');
+      return next({ code: 401, error: { message: 'UNAUTHORIZED' } });
     }
     return next();
   },

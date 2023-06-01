@@ -17,13 +17,13 @@ const session = require('express-session');
 const boardRouter = require('./routes/board.js');
 const userRouter = require('./routes/user.js');
 
-const mongoURI = 'mongodb://127.0.0.1/scrummy';
+//const mongoURI = 'mongodb://127.0.0.1/scrummy';
 mongoose
-  .connect(mongoURI, {
+  .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     // sets the name of the DB that our collections are part of
-    // dbName: 'Best-Scrummy-2',
+    dbName: 'Best-Scrummy-2',
   })
   .then(() => console.log('Connected to Mongo DB.'))
   .catch((err) => console.log(err));
@@ -66,5 +66,10 @@ const io = socketIO(server, {
 
 const socketPath = io.of('/api/sockets');
 handleSockets(socketPath);
+
+app.use(({ code, error }, req, res, next) => {
+  console.log(code, error);
+  res.status(code).json({ error: error.message });
+});
 
 server.listen(3000, () => console.log('The server is running at port 3000'));

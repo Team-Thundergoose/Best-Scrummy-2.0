@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { socket } from '../socket';
 
 const AuthContext = React.createContext({
   user: undefined,
@@ -19,6 +20,7 @@ export const AuthContextProvider = (props) => {
     });
 
     const data = await res.json();
+    socket.emit('logged-in', data.username);
     setUser(data);
   }
   async function signUpHandler(username, password) {
@@ -30,6 +32,7 @@ export const AuthContextProvider = (props) => {
       body: JSON.stringify({ username, password }),
     });
     const data = await res.json();
+    socket.emit('logged-in', data.username);
     setUser(data);
   }
   return (
