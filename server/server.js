@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const http = require('http');
 const socketIO = require('socket.io');
@@ -22,15 +23,13 @@ const io = socketIO(server, {
   pingTimeout: 1000, // how many ms without a pong packet to consider the connection closed
   pingInterval: 3000, // how many ms before sending a new ping packet
   cors: {
-    origin: "http://localhost:8080",
-    methods: ["GET", "POST"]
-  }
+    origin: 'http://localhost:8080',
+    methods: ['GET', 'POST'],
+  },
 });
 
 // temp storage to store tasks
 let storage = [[], [], [], []];
-
-
 
 // list of names
 let anonNames = [
@@ -254,7 +253,10 @@ io.of('/api/sockets').on('connection', (socket) => {
       // push foundTask into next column in storage
       storage[foundColumnIndex + 1].push(foundTask);
     }
-    io.of('/api/sockets').emit('move-task-right', { uuid, reviewerId: socket.id });
+    io.of('/api/sockets').emit('move-task-right', {
+      uuid,
+      reviewerId: socket.id,
+    });
   });
 
   //Listener for 'previous'

@@ -18,21 +18,4 @@ const router = createBrowserRouter([
 
 const root = createRoot(document.getElementById('root'));
 
-root.render(<RouterProvider router={ router }></RouterProvider>);
-
-
-
-// const Root = () => {
-//   return (
-//     <>
-//       <div>
-//         <link to="/"> LogIn </link>
-//         <link to="/signup">SignUp</link>
-//         <link to="/profile">Profile</link>
-//         <link to="/activeboards">Active Boards</link>
-//         <link to="/newboard">New Board</link>
-//       </div>
-//     </>
-//   )
-// }
-
+root.render(<RouterProvider router={router}></RouterProvider>);

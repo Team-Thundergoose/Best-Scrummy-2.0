@@ -1,10 +1,10 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
-const ENTRY_FILE = '/src/index.js';
+const ENTRY_FILE = './src/index.js';
 const PUBLIC_PATH = '/';
 const OUTPUT_PATH = path.join(__dirname, '/dist');
-const TEMPLATE_FILE = '/src/index.html';
+const TEMPLATE_FILE = './src/index.html';
 
 module.exports = {
   entry: ENTRY_FILE,
